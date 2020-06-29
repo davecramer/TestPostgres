@@ -17,8 +17,8 @@ class TestPostgres {
         Kerberos kerberos = new Kerberos()
         Process k = kerberos.startKerberos()
         Postgres postgres = new Postgres('/usr/lib/postgresql/12/bin/', '/tmp/pggss')
-        postgres.waitForHBA(5000)
-        if (postgres.writePgHBA("host all all 127.0.0.1/32 trust") ) {
+        if (postgres.waitForHBA(5000) ) {
+            postgres.writePgHBA("host all all 127.0.0.1/32 trust")
             Process p = postgres.startPostgres(kerberos.env)
             pgJDBC = new PgJDBC(host, postgres.getPort());
             pgJDBC.addProperty(PGProperty.GSS_ENC_MODE, GSSEncMode.DISABLE.value)
