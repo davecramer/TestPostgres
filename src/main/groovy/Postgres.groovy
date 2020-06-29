@@ -18,14 +18,13 @@ class Postgres {
         this.binPath = binPath
         this.dataPath = dataPath
     }
-
-
-
+    
     public void initDB() {
         new File(dataPath).with { f->
-            if (!f.exists())
+            if (!f.exists()) {
                 println "Initializing db at $dataPath"
                 "$binPath/initdb -D $dataPath".execute()
+            }
         }
     }
 
