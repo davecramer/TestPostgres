@@ -51,6 +51,15 @@ class Postgres {
         Util.appendToFile("$dataPath/pg_ident.conf", text, true)
     }
 
+    public boolean waitForHBA( int milliseconds ) {
+        long now = System.nanoTime();
+        while ( System.nanoTime() < (now + (milliseconds * 1E6)) ) {
+            if (new File("$dataPath/pg_hba.conf").exists()) {
+                return true
+            }
+        }
+        return false
+    }
     public void writePgHBA(String text) {
         Util.appendToFile("$dataPath/pg_hba.conf", text, true)
     }
