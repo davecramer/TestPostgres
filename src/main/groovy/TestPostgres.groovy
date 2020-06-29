@@ -16,7 +16,7 @@ class TestPostgres {
 
         Kerberos kerberos = new Kerberos()
         Process k = kerberos.startKerberos()
-        Postgres postgres = new Postgres('/usr/local/pgsql/testgssapi/bin/', '/tmp/pggss')
+        Postgres postgres = new Postgres('/usr/lib/postgresql/11/bin/', '/tmp/pggss')
         postgres.writePgHBA("host all all 127.0.0.1/32 trust")
         Process p = postgres.startPostgres(kerberos.env)
         pgJDBC = new PgJDBC(host, postgres.getPort());
