@@ -30,8 +30,8 @@ jobs:
         java-version: 8
 
     - name: 'install software'
-      run: sudo apt install krb5-kdc
-      
+      run: sudo apt -y install krb5-kdc krb5-admin-server
+
     - name: 'Pull jdbc'
       run: git clone https://github.com/pgjdbc/pgjdbc.git
 
