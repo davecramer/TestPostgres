@@ -17,7 +17,7 @@ class TestPostgres {
         Kerberos kerberos = new Kerberos()
         Process k = kerberos.startKerberos()
         Postgres postgres = new Postgres('/usr/lib/postgresql/12/bin/', '/tmp/pggss')
-        postgres.waitForHBA(1000)
+        postgres.waitForHBA(5000)
         if (postgres.writePgHBA("host all all 127.0.0.1/32 trust") ) {
             Process p = postgres.startPostgres(kerberos.env)
             pgJDBC = new PgJDBC(host, postgres.getPort());
@@ -39,6 +39,7 @@ class TestPostgres {
             }
         } else {
             System.err.println("Unable to create pg_hba.conf")
+            System.exit(-1)
         }
     }
 }
