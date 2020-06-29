@@ -46,3 +46,6 @@ jobs:
       run: |
         echo Add other actions to build,
         ./gradlew assemble
+
+    - name: Application
+      run: ./gradlew run
