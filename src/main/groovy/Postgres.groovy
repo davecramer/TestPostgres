@@ -32,13 +32,14 @@ class Postgres {
     public Process runPostgres(String[] environment ) {
         // -i to enable tcp connections since java needs them anyway
         println "executing postgres datapath: $dataPath, host: $hostName, port: $port"
+        String exec = "$binPath/postgres -h $hostName -k /tmp -p $port -i -D $dataPath"
         Process p
 
         new Thread() {
             @Override
             void run() {
-                println "$binPath/postgres -h $hostName -k /tmp -p $port -i -D $dataPath"
-                p = "$binPath/postgres -h $hostName -k /var/run -p $port -i -D $dataPath".execute(environment, null)
+                println exec
+                p = exec.execute(environment, null)
                 p.waitForProcessOutput(System.out, System.err)
 
             }
