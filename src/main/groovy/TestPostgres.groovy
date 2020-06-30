@@ -16,6 +16,7 @@ class TestPostgres {
 
         Kerberos kerberos = new Kerberos()
         Process k = kerberos.startKerberos()
+        "env".execute(kerberos.env,null)
         Postgres postgres = new Postgres('/usr/lib/postgresql/12/bin/', '/tmp/pggss')
         if (postgres.waitForHBA(5000) ) {
             postgres.writePgHBA("host all all 127.0.0.1/32 trust")
