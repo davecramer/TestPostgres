@@ -37,7 +37,7 @@ class Postgres {
         new Thread() {
             @Override
             void run() {
-                p = "$binPath/postgres -h $hostName -p $port -i -D $dataPath".execute(environment, null)
+                p = "$binPath/postgres -h $hostName -k /var/run -p $port -i -D $dataPath".execute(environment, null)
                 p.waitForProcessOutput(System.out, System.err)
 
             }
