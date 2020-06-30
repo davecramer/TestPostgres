@@ -16,7 +16,15 @@ class TestPostgres {
 
         Kerberos kerberos = new Kerberos()
         Process k = kerberos.startKerberos()
-        println "env".execute(kerberos.env,null).text
+        Map environment = System.getenv()
+        // +2 for the kerberos environment
+        String [] currentEnvironment = new String[environment.size() + 2]
+        environment.eachWithIndex {e,i->
+            currentEnvironment[i] = "${e.key}=${e.value}"
+        }
+        currentEnvironment[environment.size()] = kerberos.env[0]
+        currentEnvironment[environment.size() + 1] = kerberos.env[1]
+        println "env".execute(currentEnvironment,null).text
 
         /*
         Postgres postgres = new Postgres('/usr/lib/postgresql/12/bin/', '/tmp/pggss')
