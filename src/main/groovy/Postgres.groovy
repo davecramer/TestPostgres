@@ -23,7 +23,7 @@ class Postgres {
         new File(dataPath).with { f->
             if (!f.exists()) {
                 println "Initializing db at $dataPath"
-                Process p = "$binPath/initdb -D $dataPath".execute()
+                Process p = "$binPath/initdb --auth=trust -D $dataPath".execute()
                 p.waitForProcessOutput(System.out, System.err)
             }
         }
