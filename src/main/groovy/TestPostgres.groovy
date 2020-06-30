@@ -16,8 +16,8 @@ class TestPostgres {
 
         Kerberos kerberos = new Kerberos()
         Process k = kerberos.startKerberos()
-        "env".execute(kerberos.env,null)
-        
+        println "env".execute(kerberos.env,null).text
+
         /*
         Postgres postgres = new Postgres('/usr/lib/postgresql/12/bin/', '/tmp/pggss')
         if (postgres.waitForHBA(5000) ) {
