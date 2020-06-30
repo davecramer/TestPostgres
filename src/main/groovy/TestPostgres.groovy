@@ -10,7 +10,7 @@ class TestPostgres {
 
     public void testKerberos() {
         String host='127.0.0.1'
-        String superUser = 'davec'
+        String superUser = 'runner'
         String superPass = 'test'
         PgJDBC pgJDBC
 
