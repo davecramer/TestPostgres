@@ -19,8 +19,6 @@ public class PgJDBC {
     public PgJDBC(String host, int port) {
         this.host = host
         this.port = port
-        Process p = "env".execute()
-        p.waitForProcessOutput(System.out, System.err)
     }
 
     public void addProperty(PGProperty pgProperty, Object value) {

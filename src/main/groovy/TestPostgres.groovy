@@ -25,9 +25,9 @@ class TestPostgres {
         currentEnvironment[environment.size()] = kerberos.env[0]
         currentEnvironment[environment.size() + 1] = kerberos.env[1]
 
-        Postgres postgres = new Postgres('/usr/lib/postgresql/12/bin/', '/tmp/pggss')
+        Postgres postgres = new Postgres('/usr/local/lib/12/bin/', '/tmp/pggss')
         if (postgres.waitForHBA(5000) ) {
-            postgres.writePgHBA("host all all 127.0.0.1/32 trust")
+            //postgres.writePgHBA("host all all 127.0.0.1/32 trust")
             new File("/tmp/pggss/pg_hba.conf").readLines().each {l->
                 println l
             }
