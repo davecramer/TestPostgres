@@ -15,9 +15,9 @@ class TestPostgres {
         PgJDBC pgJDBC
 
         Kerberos kerberos = new Kerberos()
+        kerberos.startKerberos()
         kerberos.showConfig()
         kerberos.showKdc()
-        Process k = kerberos.startKerberos()
         Map environment = System.getenv()
         // +2 for the kerberos environment
         String [] currentEnvironment = new String[environment.size() + 2]
