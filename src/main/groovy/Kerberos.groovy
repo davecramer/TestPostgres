@@ -209,6 +209,8 @@ $realm = {
         getBinDir()
         String curDir = new File('.').getAbsolutePath()
         setupKerberos(curDir)
+        // tell java where we want it to look
+        System.setProperty("java.security.krb5.conf", krb5Conf)
         runKerberos()
     }
 
