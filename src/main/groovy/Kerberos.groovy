@@ -212,6 +212,19 @@ $realm = {
         runKerberos()
     }
 
+    public void showConfig() {
+        println "krb config file: "
+        new File(krb5Conf).readLines().each {l->
+            println l
+        }
+    }
+
+    public void showKdc() {
+        println "kdc config file: "
+        new File(kdcConf).readLines().each {l->
+            println l
+        }
+    }
     public static void main(String []args) {
         Kerberos kerberos = new Kerberos()
         kerberos.getBinDir()
