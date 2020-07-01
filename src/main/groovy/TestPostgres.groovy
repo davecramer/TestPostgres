@@ -16,8 +16,6 @@ class TestPostgres {
 
         Kerberos kerberos = new Kerberos()
         kerberos.startKerberos()
-        kerberos.showConfig()
-        kerberos.showKdc()
         Map environment = System.getenv()
         // +2 for the kerberos environment
         String [] currentEnvironment = new String[environment.size() + 2]
@@ -29,10 +27,6 @@ class TestPostgres {
 
         Postgres postgres = new Postgres('/usr/lib/postgresql/12/bin/', '/tmp/pggss')
         if (postgres.waitForHBA(5000) ) {
-            //postgres.writePgHBA("host all all 127.0.0.1/32 trust")
-            new File("/tmp/pggss/pg_hba.conf").readLines().each {l->
-                println l
-            }
             Process p = postgres.startPostgres(currentEnvironment)
             pgJDBC = new PgJDBC(host, postgres.getPort());
             pgJDBC.addProperty(PGProperty.GSS_ENC_MODE, GSSEncMode.DISABLE.value)
