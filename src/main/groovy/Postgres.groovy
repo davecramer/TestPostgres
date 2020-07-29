@@ -6,7 +6,7 @@ class Postgres {
     int port
 
     public Postgres() {
-        setupPaths('/usr/local/pgsql/12/bin/','/tmp/pgdata11')
+        setupPaths('/usr/local/pgsql/testgssapi/bin/','/tmp/pgdata11')
         initDB()
     }
     public Postgres(String binDir, String dataDir) {
@@ -61,6 +61,9 @@ class Postgres {
             }
         }
         return false
+    }
+    public void resetPgHBA() {
+        Util.appendToFile("$dataPath/pg_hba.conf", "host    all             all             127.0.0.1/32            trust", true)
     }
     public void writePgHBA(String text) {
         Util.appendToFile("$dataPath/pg_hba.conf", text, true)

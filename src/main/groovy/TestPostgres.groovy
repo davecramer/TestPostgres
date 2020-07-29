@@ -26,10 +26,11 @@ class TestPostgres {
         currentEnvironment[environment.size() + 1] = kerberos.env[1]
 
         Postgres postgres = new Postgres('/usr/lib/postgresql/12/bin/', '/tmp/pggss')
+        postgres.resetPgHBA()
         if (postgres.waitForHBA(5000) ) {
             Process p = postgres.startPostgres(currentEnvironment)
             pgJDBC = new PgJDBC(host, postgres.getPort());
-            pgJDBC.addProperty(PGProperty.GSS_ENC_MODE, GSSEncMode.DISABLE.value)
+            pgJDBC.addProperty(PGProperty.GSS_ENC_MODE, GSSEncMode.REQUIRE.value)
             pgJDBC.createUser(superUser, superPass, 'test1', 'secret1')
             pgJDBC.createDatabase(superUser, superPass, 'test1', 'test')
             postgres.enableGSS('127.0.0.1', 'hostgssenc', 'map=mymap')
