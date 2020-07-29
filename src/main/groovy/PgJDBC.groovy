@@ -3,6 +3,7 @@ import org.postgresql.PGProperty
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.ResultSet
+import java.sql.Statement
 
 @groovy.transform.CompileStatic
 public class PgJDBC {
@@ -29,12 +30,11 @@ public class PgJDBC {
 
     }
 
-    public void tryConnect(String dataBase, String host, int port, String user, String password) {
+    public Connection tryConnect(String dataBase, String host, int port, String user, String password) {
         String url = "jdbc:postgresql://$host:$port/$dataBase"
         PGProperty.USER.set(properties,user)
         PGProperty.PASSWORD.set(properties,password)
-        Connection conn = DriverManager.getConnection(url,properties)
-        conn.close()
+        DriverManager.getConnection(url,properties)
     }
 
     public void createUser(String superuser, String superPass, String user, String password) {
@@ -59,6 +59,18 @@ public class PgJDBC {
             conn.createStatement().execute("create database $database owner '$owner'")
         }
         conn.close()
+    }
+
+    public boolean select(Connection connection, String query ) throws Exception {
+        Statement statement
+        try {
+            statement = connection.createStatement()
+            ResultSet resultSet = statement.executeQuery(query)
+            return resultSet.next()
+        } finally {
+            statement.close()
+        }
+        return false;
     }
     public static void main(String[] args ){
         PgJDBC pgJDBC = new PgJDBC()

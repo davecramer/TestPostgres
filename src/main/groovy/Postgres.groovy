@@ -62,6 +62,10 @@ class Postgres {
         }
         return false
     }
+
+    public String readPgHBA() {
+        Util.readFile("$dataPath/pg_hba.conf")
+    }
     public void resetPgHBA() {
         Util.appendToFile("$dataPath/pg_hba.conf", "host    all             all             127.0.0.1/32            trust", true)
     }

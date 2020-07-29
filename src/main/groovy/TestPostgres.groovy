@@ -1,5 +1,8 @@
+import org.junit.Assert
 import org.postgresql.PGProperty
 import org.postgresql.jdbc.GSSEncMode
+
+import java.sql.Connection
 
 @groovy.transform.CompileStatic
 class TestPostgres {
@@ -30,19 +33,57 @@ class TestPostgres {
         if (postgres.waitForHBA(5000) ) {
             Process p = postgres.startPostgres(currentEnvironment)
             pgJDBC = new PgJDBC(host, postgres.getPort());
-            pgJDBC.addProperty(PGProperty.GSS_ENC_MODE, GSSEncMode.REQUIRE.value)
+            pgJDBC.addProperty(PGProperty.GSS_ENC_MODE, GSSEncMode.DISABLE.value)
             pgJDBC.createUser(superUser, superPass, 'test1', 'secret1')
             pgJDBC.createDatabase(superUser, superPass, 'test1', 'test')
             postgres.enableGSS('127.0.0.1', 'hostgssenc', 'map=mymap')
             postgres.enableMyMap('EXAMPLE.COM')
             postgres.setKeyTabLocation(kerberos.getKeytab())
             postgres.reload()
-            pgJDBC.addProperty(PGProperty.GSS_ENC_MODE, GSSEncMode.PREFER.value)
+            pgJDBC.addProperty(PGProperty.GSS_ENC_MODE, GSSEncMode.REQUIRE.value)
             pgJDBC.addProperty(PGProperty.JAAS_LOGIN, true)
             pgJDBC.addProperty(PGProperty.JAAS_APPLICATION_NAME, "pgjdbc")
             try {
-                pgJDBC.tryConnect('test', 'auth-test-localhost.postgresql.example.com', postgres.getPort(), 'test1', 'secret1')
-            } finally {
+                Connection connection;
+                try {
+                    connection = pgJDBC.tryConnect('test', 'auth-test-localhost.postgresql.example.com', postgres.getPort(), 'test1', 'secret1')
+                    if (pgJDBC.select(connection, "SELECT gss_authenticated AND encrypted from pg_stat_gssapi where pid = pg_backend_pid()")) {
+                        System.err.println 'GSS authenticated and encrypted Connection succeeded'
+                    } else {
+                        Assert.fail 'GSS authenticated and encrypted Connection failed'
+                    }
+                } catch( Exception ex ) {
+                    System.err.println "PG HBA.conf: \n ${postgres.readPgHBA()}"
+                    ex.printStackTrace()
+                } finally {
+                    connection?.close()
+
+                }
+
+                postgres.enableGSS('127.0.0.1', 'hostnogssenc', 'map=mymap')
+                postgres.reload()
+                pgJDBC.addProperty(PGProperty.GSS_ENC_MODE, GSSEncMode.DISABLE.value)
+
+                try {
+                    connection = pgJDBC.tryConnect('test', 'auth-test-localhost.postgresql.example.com', postgres.getPort(), 'test1', 'secret1')
+
+                    if (pgJDBC.select(connection, "SELECT gss_authenticated AND not encrypted from pg_stat_gssapi where pid = pg_backend_pid()")) {
+                        System.err.println 'GSS authenticated and not encrypted Connection succeeded'
+                    } else {
+                        Assert.fail 'GSS authenticated and not encrypted Connection failed'
+                    }
+                }catch( Exception ex ) {
+                    System.err.println "PG HBA.conf: \n ${postgres.readPgHBA()}"
+                    ex.printStackTrace()
+
+
+                } finally {
+                    if (!connection) {
+                        System.err.println "PG HBA.conf: \n ${postgres.readPgHBA()}"
+                    }
+                    connection?.close()
+                }
+            }finally {
                 !p.destroy()
                 !kerberos.destroy()
             }
