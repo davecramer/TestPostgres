@@ -41,11 +41,7 @@ jobs:
     - name: 'build branch'
       run: |
         cd pgjdbc
-        git config user.email "dave@postgres.rocks"
-        git config user.name "Dave Cramer"
-        git checkout -b davecramer-gssapi-ecrypted master
-        git pull https://github.com/davecramer/pgjdbc.git gssapi-ecrypted
-        ./gradlew publishToMavenLocal
+        ./gradlew publishToMavenLocal -Ppgjdbc.version=1.0.0-dev-master -PskipJavadoc
 
       # Runs a set of commands using the runners shell
     - name: Run a multi-line script
