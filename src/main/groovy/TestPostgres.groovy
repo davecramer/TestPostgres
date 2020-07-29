@@ -12,8 +12,10 @@ class TestPostgres {
     }
 
     public void testKerberos() {
+        String osName = System.getProperty("os.name")
+
         String host='127.0.0.1'
-        String superUser = 'runner'
+        String superUser = osName.startsWith("Mac")?'davec':'runner'
         String superPass = 'test'
         PgJDBC pgJDBC
 
@@ -28,9 +30,10 @@ class TestPostgres {
         currentEnvironment[environment.size()] = kerberos.env[0]
         currentEnvironment[environment.size() + 1] = kerberos.env[1]
 
-        Postgres postgres = new Postgres('/usr/lib/postgresql/12/bin/', '/tmp/pggss')
+        Postgres postgres = new Postgres(osName.startsWith("Mac")?'/usr/local/pgsql/testgssapi/bin/':'/usr/lib/postgresql/12/bin/', '/tmp/pggss')
         postgres.resetPgHBA()
         if (postgres.waitForHBA(5000) ) {
+            sleep(2000)
             Process p = postgres.startPostgres(currentEnvironment)
             pgJDBC = new PgJDBC(host, postgres.getPort());
             pgJDBC.addProperty(PGProperty.GSS_ENC_MODE, GSSEncMode.DISABLE.value)
