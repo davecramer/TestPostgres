@@ -105,6 +105,7 @@ kdc = FILE:$kdcLog
 
 [libdefaults]
 default_realm = $realm
+canonicalize = true
 
 [realms]
     $realm = {
